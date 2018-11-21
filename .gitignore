@@ -1,0 +1,10 @@
+#Ignore .o
+*.o
+
+#Ignore temp files
+*~
+
+listener
+talker
+talker2
+showip
