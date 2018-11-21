@@ -35,13 +35,15 @@ int main(void)
 	int rv;
 	int numbytes;
 	struct sockaddr_storage their_addr;
-	struct sockaddr_storage *my_addr;
+	struct sockaddr_in *the_addr;
 	char buf[MAXBUFLEN];
 	socklen_t addr_len;
+
+
 	char s[INET6_ADDRSTRLEN];
 
 	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_INET; // set to AF_INET to force IPv4
+	hints.ai_family = AF_UNSPEC; // set to AF_INET to force IPv4
 	hints.ai_socktype = SOCK_DGRAM;
 	hints.ai_flags = AI_PASSIVE; // use my IP
 
@@ -88,10 +90,11 @@ int main(void)
 		exit(1);
 	}
 
-	printf("listener: got packet from %s\n",
+	the_addr=(struct sockaddr_in*)&their_addr;
+	printf("listener: got packet from %s:%d\n",
 		inet_ntop(their_addr.ss_family,
 			get_in_addr((struct sockaddr *)&their_addr),
-			s, sizeof s));
+			  s, sizeof s),ntohs(the_addr->sin_port));
 	printf("listener: packet is %d bytes long\n", numbytes);
 	buf[numbytes] = '\0';
 	printf("listener: packet contains \"%s\"\n", buf);
