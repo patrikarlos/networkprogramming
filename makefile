@@ -27,6 +27,8 @@ conlisten: concurr-tcp.o
 genlisten: concurr-tcp-gen.o
 	$(CC) concurr-tcp-gen.o -o genlisten
 
+tcpbasicclient: tcp_basic_client.o
+	$(CC) tcp_basic_client.o -o tcpbasicclient
 
 showip: showip.o
 	$(CC) showip.o -o showip
