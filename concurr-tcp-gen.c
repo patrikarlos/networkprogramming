@@ -97,7 +97,6 @@ int main()
    pid=fork();
    if(pid==0)//child process rec and send
      {
-       printf("Im child %d.\n", childCnt);
        //rceive from client
        get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
        
