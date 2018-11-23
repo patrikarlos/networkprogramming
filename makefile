@@ -1,12 +1,12 @@
 # Declaration of variables
 CC = gcc
-CC_FLAGS = -w
+CC_FLAGS = -w -g
  
 
 
 OBJECTS = $(wildcard *.o)
 
-all: talker talker2 listener showip
+all: talker talker2 listener showip conlisten genlisten
 
 
 
@@ -20,6 +20,13 @@ talker2: talker2.o
 
 listener: listener.o
 	$(CC) listener.o -o listener
+
+conlisten: concurr-tcp.o
+	$(CC) concurr-tcp.o -o conlisten
+
+genlisten: concurr-tcp-gen.o
+	$(CC) concurr-tcp-gen.o -o genlisten
+
 
 showip: showip.o
 	$(CC) showip.o -o showip

@@ -8,3 +8,5 @@ listener
 talker
 talker2
 showip
+
+*.exe

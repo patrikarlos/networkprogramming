@@ -58,9 +58,13 @@ int main()
  int pid;
 
  char cli[INET6_ADDRSTRLEN];
- 
  char s[INET6_ADDRSTRLEN];
-	
+
+  
+ memset(msg,'A',MAXSZ);
+ msg[MAXSZ-1]='\n';
+ 
+ 
  //create socket
  listenfd=socket(AF_INET,SOCK_STREAM,0);
  //initialize the socket addresses
@@ -97,16 +101,12 @@ int main()
        //rceive from client
        get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
        
+       printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
        while(1){
-	 n=recv(connfd,msg,MAXSZ,0);
-	 printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
-	 if(n==0){
-	   close(connfd);
-	   break;
-	 }
-	 msg[n]=0;
-	 send(connfd,msg,n,0);	 
-	 printf("Child[%d]: (x:y) Receive and set:%s\n",childCnt,msg);
+	 n=send(connfd,msg,MAXSZ,0);	 
+	 printf("Child[%d] (%s:%d): Sent (%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
+	 sleep(1);
+	 
        }//close interior while
        exit(0);
      }
