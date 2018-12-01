@@ -32,7 +32,7 @@ main(int argc, char **argv){
    bob = res;
    do {
      inet_ntop(bob->ai_family, &((struct sockaddr_in *)bob->ai_addr)->sin_addr,addrstring,100);
-     printf(" hostname: %s %s %p\n", bob->ai_canonname,addrstring,bob->ai_next);
+     printf(" hostname: %s %s %d %p\n", bob->ai_canonname,addrstring,bob->ai_protocol, bob->ai_next);
      bob = bob->ai_next;
    } while (bob != NULL );
  }
