@@ -6,12 +6,15 @@ CC_FLAGS = -w -g
 
 OBJECTS = $(wildcard *.o)
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo
 
 
 
 
 # targets
+getaddrinfo: getaddrinfo.o
+	$(CC) getaddrinfo.o -o getaddrinfo
+
 hostent: hostent.o
 	$(CC) hostent.o -o hostent
 
