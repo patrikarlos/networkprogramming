@@ -22,8 +22,10 @@ main(int argc, char **argv)
 	
 	
 	while (--argc > 0) {
-		ptr = *++argv;
-		if ( (hptr = gethostbyaddr(ptr, sizeof(struct in_addr),
+	  inet_aton(*++argv,&inaddr);;
+	  
+		
+	  if ( (hptr = gethostbyaddr((const char*)&inaddr, sizeof(struct in_addr),
 					   AF_INET)) == NULL) {
 		  fprintf(stderr,"gethostbyaddr error for host: %s: %d",ptr, h_errno);
 			continue;
