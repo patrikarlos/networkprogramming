@@ -141,6 +141,6 @@ size_t do_headerstuff(void *buffer, size_t size, size_t nitems, void *userp){
   if(visualize_header){
     printf("Header => %s" , buffer);
   }
-  return size*nitems;;
+  return size*nitems;
 }
 
