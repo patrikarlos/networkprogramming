@@ -6,7 +6,7 @@ CC_FLAGS = -w -g
 
 OBJECTS = $(wildcard *.o)
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets wget-curl security1
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1
 
 
 
@@ -14,9 +14,6 @@ all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrin
 # targets
 security1: security1.o
 	$(CC) security1.o -o security1 -lcrypto
-
-wget-curl: wget-curl.o
-	$(CC) wget-curl.o -o wget-curl -lcurl
 
 givemeSockets: givemeSockets.o
 	$(CC) givemeSockets.o -o givemeSockets
