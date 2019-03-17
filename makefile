@@ -6,7 +6,7 @@ CC_FLAGS = -w -g
 
 OBJECTS = $(wildcard *.o)
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv
 
 
 
@@ -48,6 +48,9 @@ tcpbasicclient: tcp_basic_client.o
 
 showip: showip.o
 	$(CC) showip.o -o showip
+
+tcpechoserv: tcp_select_server.o
+	$(CC) tcp_select_server.o -o tcpechoserv
 
 ### Build stuff
 # To obtain object files
