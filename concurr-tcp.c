@@ -57,8 +57,7 @@ int main()
  int clientAddressLength;
  int pid;
 
- char cli[INET6_ADDRSTRLEN];
- 
+ char cli[INET6_ADDRSTRLEN]; 
  char s[INET6_ADDRSTRLEN];
 	
  //create socket
@@ -74,14 +73,13 @@ int main()
 
  //listen for connection from client
  listen(listenfd,5);
-
+ printf("Listening on port %d \n",PORT);
  while(1) {
    //parent process waiting to accept a new connection
    printf("\n*****server waiting for new client connection:*****\n");
    clientAddressLength=sizeof(clientAddress);
    connfd=accept(listenfd,(struct sockaddr*)&clientAddress,&clientAddressLength);
    printf("accept = %d \n", connfd );
-   //printf("connected to client: %s\n",inet_ntoa(clientAddress.sin_addr));
    childCnt++;
    
    printf("listener: got packet from %s:%d\n",
@@ -101,6 +99,7 @@ int main()
 	 n=recv(connfd,msg,MAXSZ,0);
 	 printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
 	 if(n==0){
+	   printf("Child [%d]: Im dying...",childCnt);
 	   close(connfd);
 	   break;
 	 }
@@ -113,6 +112,10 @@ int main()
    else {
      printf("Parent, close connfd().\n");
      close(connfd);//sock is closed BY PARENT
+	 if(childCnt>5){
+		 printf("Being a bad parent.\n");
+		 sleep(10);
+	 }
    }
  }//close exterior while
  

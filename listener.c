@@ -18,6 +18,31 @@
 
 #define MAXBUFLEN 100
 
+// Helper function you can use:
+
+//Convert a struct sockaddr address to a string, IPv4 and IPv6:
+
+char *get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen)
+{
+    switch(sa->sa_family) {
+        case AF_INET:
+            inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr),
+                    s, maxlen);
+            break;
+
+        case AF_INET6:
+            inet_ntop(AF_INET6, &(((struct sockaddr_in6 *)sa)->sin6_addr),
+                    s, maxlen);
+            break;
+
+        default:
+            strncpy(s, "Unknown AF", maxlen);
+            return NULL;
+    }
+
+    return s;
+}
+
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)
 {
@@ -43,7 +68,7 @@ int main(void)
 	char s[INET6_ADDRSTRLEN];
 
 	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_UNSPEC; // set to AF_INET to force IPv4
+	hints.ai_family = AF_INET; // set to AF_INET to force IPv4
 	hints.ai_socktype = SOCK_DGRAM;
 	hints.ai_flags = AI_PASSIVE; // use my IP
 
@@ -80,25 +105,25 @@ int main(void)
 	printf("bob,\n");
 	printf("family = %d \n",p->ai_family);
 	printf("AF_INET = %d and AF_INET6 = %d and AF_UNSPEC  = %d  and AF_UNIX = %d \n", AF_INET, AF_INET6, AF_UNSPEC, AF_UNIX);
-	//	printf("listener on  %s\n",inet_ntop(my_addr->ss_family,get_in_addr((struct sockaddr *)my_addr),s, sizeof s));
 	
-		 
-	addr_len = sizeof their_addr;
-	if ((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1 , 0,
-		(struct sockaddr *)&their_addr, &addr_len)) == -1) {
-		perror("recvfrom");
-		exit(1);
+	
+	while(1){
+		addr_len = sizeof their_addr;
+		if ((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1 , 0,
+			(struct sockaddr *)&their_addr, &addr_len)) == -1) {
+			perror("recvfrom");
+			exit(1);
+		}
+
+		the_addr=(struct sockaddr_in*)&their_addr;
+		printf("listener: from %s:%d ",
+			inet_ntop(their_addr.ss_family,
+				get_in_addr((struct sockaddr *)&their_addr),
+				  s, sizeof s),ntohs(the_addr->sin_port));
+		printf(" %d bytes ", numbytes);
+		buf[numbytes] = '\0';
+		printf(": \"%s\"\n", buf);
 	}
-
-	the_addr=(struct sockaddr_in*)&their_addr;
-	printf("listener: got packet from %s:%d\n",
-		inet_ntop(their_addr.ss_family,
-			get_in_addr((struct sockaddr *)&their_addr),
-			  s, sizeof s),ntohs(the_addr->sin_port));
-	printf("listener: packet is %d bytes long\n", numbytes);
-	buf[numbytes] = '\0';
-	printf("listener: packet contains \"%s\"\n", buf);
-
 	close(sockfd);
 
 	return 0;

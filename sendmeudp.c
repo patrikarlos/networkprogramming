@@ -82,12 +82,14 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 //		printf("%s",buffer);
-/*
+
+		printf("'");
 		for(int k=0;k<20;k++){
 			printf("%c",buffer[k]);
 		}
-*/
-		printf("\nSent %d bytes \n",numbytes);
+		printf("'");
+
+		printf(" => Sent %d bytes \n",numbytes);
 		readTotByte+=numread;
 		sentTotByte+=numbytes;
 		numread=fread(buffer,1,sizeof(buffer),fptr);
