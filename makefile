@@ -6,7 +6,7 @@ CC_FLAGS = -w -g
 
 OBJECTS = $(wildcard *.o)
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp
 
 
 
@@ -29,7 +29,10 @@ ptrent: ptrent.o
 
 sendmeudp: sendmeudp.o
 	$(CC) sendmeudp.o -o sendmeudp
-	
+
+receivemeudp: receivemeudp.o
+	$(CC) receivemeudp.o -o receivemeudp
+		
 talker: talker.o
 	$(CC) talker.o -o talker
 
