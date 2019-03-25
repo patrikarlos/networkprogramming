@@ -13,6 +13,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include  <signal.h>
 
 #define MYPORT "4950"	// the port users will be connecting to
 
@@ -53,9 +54,24 @@ void *get_in_addr(struct sockaddr *sa)
 	return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
+	FILE *fptr;
+	int sockfd;
+		
+void  ALARMhandler(int sig)
+{
+  signal(SIGALRM, SIG_IGN);          /* ignore this signal       */
+  printf("Hello\n");
+  fflush(fptr);
+  close(sockfd);
+  sockfd=NULL;
+  fclose(fptr);
+  signal(SIGALRM, ALARMhandler);     /* reinstall the handler    */
+}
+
+
 int main(int argc, char *argv[])
 {
-	int sockfd;
+
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
 	int numbytes,numwritten;
@@ -63,7 +79,7 @@ int main(int argc, char *argv[])
 	struct sockaddr_in *the_addr;
 	char buf[MAXBUFLEN];
 	socklen_t addr_len;
-	FILE *fptr;
+
 	int readTotByte=0;
 	int sentTotByte=0;
 	
@@ -113,12 +129,22 @@ int main(int argc, char *argv[])
 	printf("family = %d \n",p->ai_family);
 	printf("AF_INET = %d and AF_INET6 = %d and AF_UNSPEC  = %d  and AF_UNIX = %d \n", AF_INET, AF_INET6, AF_UNSPEC, AF_UNIX);
 	
+	signal(SIGALRM, ALARMhandler);
+	
+	fptr = fopen(filename,"w");
+	if (fptr == NULL) {
+		fprintf(stderr, "%s: failed to open file.\n",argv[0]);
+		close(sockfd);
+		exit(0);
+	}
 	
 	while(1){
 		addr_len = sizeof their_addr;
 		if ((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1 , 0,
 			(struct sockaddr *)&their_addr, &addr_len)) == -1) {
-			perror("recvfrom");
+			if(sockfd!=NULL){
+				perror("recvfrom");
+			}
 			exit(1);
 		}
 
@@ -128,25 +154,21 @@ int main(int argc, char *argv[])
 				get_in_addr((struct sockaddr *)&their_addr),
 				  s, sizeof s),ntohs(the_addr->sin_port));
 		printf(" %d bytes : ", numbytes);
-		fptr = fopen(filename,"w+");
-		if (fptr == NULL) {
-			fprintf(stderr, "%s: failed to open file.\n",argv[0]);
-			close(sockfd);
-			exit(0);
-		}
+
 		numwritten=fwrite(buf,1,numbytes,fptr);
-		fclose(fptr);
+
 		printf("'");
 		for(int k=0;k<20;k++){
 			printf("%c",buf[k]);
 		}
 		printf("'");
-
-		printf("\nWritten %d bytes \n",numwritten);
 		readTotByte+=numbytes;
 		sentTotByte+=numwritten;
+		fflush(fptr);
+		printf("\nWritten %d bytes \n",sentTotByte);
+		alarm(1);
 	}
 	close(sockfd);
-
+		fclose(fptr);
 	return 0;
 }
