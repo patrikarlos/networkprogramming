@@ -79,8 +79,7 @@ int main(void)
 
 	// loop through all the results and bind to the first we can
 	for(p = servinfo; p != NULL; p = p->ai_next) {
-		if ((sockfd = socket(p->ai_family, p->ai_socktype,
-				p->ai_protocol)) == -1) {
+		if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1) {
 			perror("listener: socket");
 			continue;
 		}
@@ -99,13 +98,27 @@ int main(void)
 		return 2;
 	}
 
+	/* Added to print the address we are listening too. */
+	char myAddress[20];
+	char *myAdd=&myAddress;
+
+	struct sockaddr_in local_sin;
+	socklen_t local_sinlen = sizeof(local_sin);
+	getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
+	
+	myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
+	printf("Listening on %s:%d \n", myAdd, atoi(MYPORT));
+	printf("Listening on %s:%d \n", myAdd, ntohs(local_sin.sin_port));
 	freeaddrinfo(servinfo);
 
 	printf("listener: waiting to recvfrom...\n");
+	/*
 	printf("bob,\n");
-	printf("family = %d \n",p->ai_family);
+	printf("family = %d || %d \n",p->ai_family, local_sin.sin_family);
 	printf("AF_INET = %d and AF_INET6 = %d and AF_UNSPEC  = %d  and AF_UNIX = %d \n", AF_INET, AF_INET6, AF_UNSPEC, AF_UNIX);
-	
+	*/
+
+	char mySend[100000];
 	
 	while(1){
 		addr_len = sizeof their_addr;
@@ -122,7 +135,14 @@ int main(void)
 				  s, sizeof s),ntohs(the_addr->sin_port));
 		printf(" %d bytes ", numbytes);
 		buf[numbytes] = '\0';
+
 		printf(": \"%s\"\n", buf);
+		for(int i=0;i<numbytes;i++){
+		  printf("%0x ",buf[i]);
+		}
+		printf("\n");
+		
+		
 	}
 	close(sockfd);
 
