@@ -4,9 +4,9 @@ CC_FLAGS = -w -g
  
 
 
-OBJECTS = $(wildcard *.o)
+OBJECTS = $(wildcard *.o talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp reactionc reactions tcpbasicclient simptcplisten )
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp reactionc reactions tcpbasicclient simptcplisten
 
 
 
@@ -32,7 +32,7 @@ sendmeudp: sendmeudp.o
 
 receivemeudp: receivemeudp.o
 	$(CC) receivemeudp.o -o receivemeudp
-		
+
 talker: talker.o
 	$(CC) talker.o -o talker
 
@@ -48,6 +48,9 @@ conlisten: concurr-tcp.o
 genlisten: concurr-tcp-gen.o
 	$(CC) concurr-tcp-gen.o -o genlisten
 
+simptcplisten: simple-tcp-gen.o
+	$(CC) simple-tcp-gen.o -o simptcplisten
+
 tcpbasicclient: tcp_basic_client.o
 	$(CC) tcp_basic_client.o -o tcpbasicclient
 
@@ -56,6 +59,12 @@ showip: showip.o
 
 tcpechoserv: tcp_select_server.o
 	$(CC) tcp_select_server.o -o tcpechoserv
+
+reactions: reaction_udp_server.o
+	$(CC) reaction_udp_server.o -o $@
+
+reactionc: reaction_udp_client.o
+	$(CC) reaction_udp_client.o -o $@
 
 ### Build stuff
 # To obtain object files

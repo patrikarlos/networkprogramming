@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
 	int rv;
 	int numbytes;
 
-	if (argc != 3) {
-		fprintf(stderr,"usage: talker hostname message\n");
+	if (argc < 3) {
+		fprintf(stderr,"usage: talker hostname message [message2] ...\n");
 		exit(1);
 	}
 
@@ -52,15 +52,34 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 
-	if ((numbytes = sendto(sockfd, argv[2], strlen(argv[2]), 0,
-			 p->ai_addr, p->ai_addrlen)) == -1) {
-		perror("talker: sendto");
-		exit(1);
-	}
+	char myAddress[20];
+	char *myAdd=&myAddress;
 
+	struct sockaddr_in local_sin;
+	socklen_t local_sinlen = sizeof(local_sin);
+	getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
+
+	myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
+	printf("Sending from  %s:%d \n", myAdd, ntohs(local_sin.sin_port));
+
+
+	for(int q=2;q<argc;q++){
+	  if ((numbytes = sendto(sockfd, argv[q], strlen(argv[q]), 0,
+				 p->ai_addr, p->ai_addrlen)) == -1) {
+	    perror("talker: sendto");
+	    exit(1);
+	  }
+
+	  getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
+	  
+	  myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
+	  printf("Sending from  %s:%d, sent %d bytes. \n", myAdd, ntohs(local_sin.sin_port),numbytes);
+	  
+	}
+	
 	freeaddrinfo(servinfo);
 
-	printf("talker: sent %d bytes to %s\n", numbytes, argv[1]);
+
 	close(sockfd);
 
 	return 0;
