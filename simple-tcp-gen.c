@@ -121,9 +121,10 @@ int main()
      n=send(connfd,msg,MAXSZ,0);	 
      printf("Child[%d](%d) (%s:%d): Sent (%d) .\n", childCnt,dropcnt,cli,ntohs(clientAddress.sin_port),n);
      sleep(1);
-     dropcnt--;
-     
+     dropcnt--;     
    }
+   shutdown(connfd, SHUT_RDWR);
+   close(connfd);
  }
  
  return 0;
