@@ -18,6 +18,7 @@
 #define PORT "4950"  // the port users will be connecting to
 
 #define BACKLOG 10	 // how many pending connections queue will hold
+#define SECRETSTRING "gimboid"
 
 void sigchld_handler(int s)
 {
@@ -112,6 +113,11 @@ int main(void)
 	
 	int childCnt=0;
 	int readSize;
+	char command[10];
+	char optionstring[128];
+	int optionint1;
+	int optionint2;
+	
 	while(1) {  // main accept() loop
 	  sin_size = sizeof(their_addr);
 		new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
@@ -141,6 +147,21 @@ int main(void)
 		    break;
 		  }
 		  msg[readSize]=0;
+
+		  int rv=sscanf(msg,"%s ",command);
+		  printf("rv=%d Decoded command as: %s \n",rv,command);
+
+		  if(strcmp(command,"close")==0){
+		    // Client sent 'command', check that it provided the correct magic word.\n");
+		    rv=sscanf(msg,"%s %s",command,optionstring);
+		    printf("rv=%d Decoded command + option as: %s %s\n",rv,command,optionstring);
+		    if(strcmp(optionstring,SECRETSTRING)==0) {
+		      printf("Yes, master I'll close.\n");
+		      close(new_fd);
+		      break;
+		    }
+		  }
+		  
 		  send(new_fd,&msg,readSize,0);	 
 		  printf("Child[%d]: sent => %s\n",childCnt,msg);
 		}//close interior while

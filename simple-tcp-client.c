@@ -110,9 +110,11 @@ int main(int argc, char *argv[])
 	    perror("recv");
 	    exit(1);
 	  }
-	  
+	  if(numbytes==0){
+	    printf("got zero.\n");
+	    break;
+	  }
 	  buf[numbytes] = '\0';
-	  
 	  printf("client: received '%s'\n",buf);
 	}
 	close(sockfd);
