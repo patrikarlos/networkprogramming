@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 	    break;
 	  }
 	    
-	  printf("read %d bytes, buffer = '%s' \n",lread, lineBuffer);
+	  printf("stdin read %d bytes, buffer = '%s' \n",lread, lineBuffer);
 	  if ((numbytes = send(sockfd, lineBuffer, lread, 0)) == -1) {
 	    perror("sendto:");
 	    exit(1);
@@ -114,8 +114,8 @@ int main(int argc, char *argv[])
 	    printf("got zero.\n");
 	    break;
 	  }
-	  buf[numbytes] = '\0';
-	  printf("client: received '%s'\n",buf);
+	  //	  buf[numbytes] = '\0';
+	  printf("client: received '%s/%d'\n",buf,numbytes);
 	}
 	close(sockfd);
 

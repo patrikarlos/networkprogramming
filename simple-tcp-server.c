@@ -157,6 +157,9 @@ int main(void)
 		    printf("rv=%d Decoded command + option as: %s %s\n",rv,command,optionstring);
 		    if(strcmp(optionstring,SECRETSTRING)==0) {
 		      printf("Yes, master I'll close.\n");
+		      sprintf(msg,"Bye bye client of mine.\0");
+		      send(new_fd,&msg,strlen(msg),0);
+		      shutdown(new_fd, SHUT_RDWR);
 		      close(new_fd);
 		      break;
 		    }
