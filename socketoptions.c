@@ -71,12 +71,13 @@ main()
 	printf("TCPNODELAY= %d\n", len);
   }
 
+#ifdef WinBuild
   if (getsockopt(sockfd, IPPROTO_TCP, TCP_CORK, &len, &i) < 0) {
     perror(": getsockopt SO_TCPNODELAY");
   } else {
 	printf("TCPCORK= %d\n", len);
   }
-
+#endif
   
   
 }

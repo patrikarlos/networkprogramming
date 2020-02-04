@@ -1,3 +1,11 @@
+ifeq ($(OS),Windows_NT)
+	uname_S := Windows
+	WinBuild = 1
+else 
+	uname_S := $(shell uname -s)
+	WinBuild = 0
+endif
+
 # Declaration of variables
 CC = gcc
 CC_FLAGS = -w -g
@@ -73,7 +81,7 @@ simpletcpclient: simple-tcp-client.o
 	$(CC) simple-tcp-client.o -o $@
 
 socketoptions: socketoptions.o
-	$(CC) socketoptions.o -o $@
+	$(CC) socketoptions.o -o $@ -DWinBuild
 
 ### Build stuff
 # To obtain object files
