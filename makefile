@@ -4,9 +4,9 @@ CC_FLAGS = -w -g
  
 
 
-OBJECTS = $(wildcard *.o talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient)
+OBJECTS = $(wildcard *.o talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions )
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions
 
 
 
@@ -71,6 +71,9 @@ simpletcpserver: simple-tcp-server.o
 
 simpletcpclient: simple-tcp-client.o
 	$(CC) simple-tcp-client.o -o $@
+
+socketoptions: socketoptions.o
+	$(CC) socketoptions.o -o $@
 
 ### Build stuff
 # To obtain object files
