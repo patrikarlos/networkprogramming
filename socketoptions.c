@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h>
 #include <signal.h>
 #include <stdio.h>
 
@@ -62,4 +63,20 @@ main()
 		printf("modified rcv low watermark= %d\n", len);
 	  }
   }
+
+  
+  if (getsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, &len, &i) < 0) {
+    perror(": getsockopt SO_TCPNODELAY");
+  } else {
+	printf("TCPNODELAY= %d\n", len);
+  }
+
+  if (getsockopt(sockfd, IPPROTO_TCP, TCP_CORK, &len, &i) < 0) {
+    perror(": getsockopt SO_TCPNODELAY");
+  } else {
+	printf("TCPCORK= %d\n", len);
+  }
+
+  
+  
 }
