@@ -1,15 +1,18 @@
 ifeq ($(OS),Windows_NT)
 	uname_S := Windows
 	WinBuild = 1
+	BFLAGS= -DWinBuild
 else 
 	uname_S := $(shell uname -s)
-	WinBuild = 0
+	BFLAGS= 	
 endif
 
 # Declaration of variables
 CC = gcc
 CC_FLAGS = -w -g
  
+
+
 
 
 OBJECTS = $(wildcard *.o talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions )
@@ -81,7 +84,7 @@ simpletcpclient: simple-tcp-client.o
 	$(CC) simple-tcp-client.o -o $@
 
 socketoptions: socketoptions.o
-	$(CC) socketoptions.o -o $@ -DWinBuild
+	$(CC) socketoptions.o $(BFLAGS) -o $@ 
 
 ### Build stuff
 # To obtain object files

@@ -32,7 +32,7 @@ main()
     perror(": getsockopt SO_RCVLOWAT");
   } else {
 	printf("rcv low watermark= %d\n", len);
-  }
+  } 
   
   if (getsockopt(sockfd, SOL_SOCKET, SO_SNDLOWAT, &len, &i) < 0) {
     perror(": getsockopt SO_SNDLOWAT");
@@ -71,12 +71,14 @@ main()
 	printf("TCPNODELAY= %d\n", len);
   }
 
-#ifdef WinBuild
+#ifndef WinBuild
   if (getsockopt(sockfd, IPPROTO_TCP, TCP_CORK, &len, &i) < 0) {
     perror(": getsockopt SO_TCPNODELAY");
   } else {
 	printf("TCPCORK= %d\n", len);
   }
+#else
+  printf("Windows has no TCP_CORK.\n");
 #endif
   
   
