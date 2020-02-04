@@ -84,12 +84,12 @@ simpletcpclient: simple-tcp-client.o
 	$(CC) simple-tcp-client.o -o $@
 
 socketoptions: socketoptions.o
-	$(CC) socketoptions.o $(BFLAGS) -o $@ 
+	$(CC) socketoptions.o -o $@
 
 ### Build stuff
 # To obtain object files
 %.o: %.c
-	$(CC) -c $(CC_FLAGS) $< -o $@
+	$(CC) -c $(CC_FLAGS) $(BFLAGS) $< -o $@
  
 # To remove generated files
 clean:
