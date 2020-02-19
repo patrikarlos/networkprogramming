@@ -15,7 +15,9 @@
 #include <netdb.h>
 
 #define SERVERPORT "4950"	// the port users will be connecting to
-#define MAXBUFLEN 100
+#define MAXBUFLEN 1450
+
+//Convert a struct sockaddr address to a string, IPv4 and IPv6:
 
 char *get_ip_str(const struct sockaddr *sa, char *s, size_t maxlen)
 {
@@ -49,20 +51,21 @@ void *get_in_addr(struct sockaddr *sa)
 }
 
 
+
 int main(int argc, char *argv[])
 {
 	int sockfd;
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
-		int numbytes;	
+	int numbytes,numwritten;
 	struct sockaddr_storage their_addr;
 	struct sockaddr_in *the_addr;
 	char buf[MAXBUFLEN];
 	socklen_t addr_len;
 	char s[INET6_ADDRSTRLEN];
-
-	if (argc < 3) {
-		fprintf(stderr,"usage: talker hostname message [message2] ...\n");
+	
+	if (argc != 3) {
+		fprintf(stderr,"usage: talker hostname message\n");
 		exit(1);
 	}
 
@@ -89,57 +92,52 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "talker: failed to create socket\n");
 		return 2;
 	}
+	p->ai_port=htons(5000);
+	if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+			close(sockfd);
+			perror("listener: bind");
+			continue;
+	}
 
+	/* Added to print the address we are listening too. */
 	char myAddress[20];
 	char *myAdd=&myAddress;
 
 	struct sockaddr_in local_sin;
 	socklen_t local_sinlen = sizeof(local_sin);
 	getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
-
+	
 	myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
-	printf("Sending from  %s:%d \n", myAdd, ntohs(local_sin.sin_port));
+	printf("Listening on %s:%d \n", myAdd, ntohs(local_sin.sin_port));
 
-
-	for(int q=2;q<argc;q++){
-	  if ((numbytes = sendto(sockfd, argv[q], strlen(argv[q]), 0,
-				 p->ai_addr, p->ai_addrlen)) == -1) {
-	    perror("talker: sendto");
-	    exit(1);
-	  }
-
-	  getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
-	  
-	  myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
-	  printf("Sending from  %s:%d, sent %d bytes. \n", myAdd, ntohs(local_sin.sin_port),numbytes);
-	  
-	}
-	
-	if ((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1 , 0,
+		if ((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1 , 0,
 			(struct sockaddr *)&their_addr, &addr_len)) == -1) {
-			perror("recvfrom");
+			if(sockfd!=NULL){
+				perror("recvfrom");
+			}
 			exit(1);
+		}
+
+		the_addr=(struct sockaddr_in*)&their_addr;
+		printf("listener: from %s:%d ",
+			inet_ntop(their_addr.ss_family,
+				get_in_addr((struct sockaddr *)&their_addr),
+				  s, sizeof s),ntohs(the_addr->sin_port));
+		printf(" %d bytes : ", numbytes);
+
+
+
+
+
+	if ((numbytes = sendto(sockfd, argv[2], strlen(argv[2]), 0,
+			 p->ai_addr, p->ai_addrlen)) == -1) {
+		perror("talker: sendto");
+		exit(1);
 	}
 
-	the_addr=(struct sockaddr_in*)&their_addr;
-	printf("listener: from %s:%d ",
-		inet_ntop(their_addr.ss_family,
-			get_in_addr((struct sockaddr *)&their_addr),
-			  s, sizeof s),ntohs(the_addr->sin_port));
-	printf(" %d bytes ", numbytes);
-	buf[numbytes] = '\0';
-
-	printf(": \"%s\"\n", buf);
-	for(int i=0;i<numbytes;i++){
-	  printf("%0x ",buf[i]);
-	}
-	printf("\n");
-
-	
-	
 	freeaddrinfo(servinfo);
 
-
+	printf("talker: sent %d bytes to %s\n", numbytes, argv[1]);
 	close(sockfd);
 
 	return 0;
