@@ -105,19 +105,13 @@ int main(void)
 	struct sockaddr_in local_sin;
 	socklen_t local_sinlen = sizeof(local_sin);
 	getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
-	
-	myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
-	printf("Listening on %s:%d \n", myAdd, atoi(MYPORT));
-	printf("Listening on %s:%d \n", myAdd, ntohs(local_sin.sin_port));
-	freeaddrinfo(servinfo);
 
 	printf("listener: waiting to recvfrom...\n");
-	/*
+	
 	printf("bob,\n");
 	printf("family = %d || %d \n",p->ai_family, local_sin.sin_family);
 	printf("AF_INET = %d and AF_INET6 = %d and AF_UNSPEC  = %d  and AF_UNIX = %d \n", AF_INET, AF_INET6, AF_UNSPEC, AF_UNIX);
-	*/
-
+	
 	char mySend[100000];
 	
 	while(1){
@@ -137,10 +131,7 @@ int main(void)
 		buf[numbytes] = '\0';
 
 		printf(": \"%s\"\n", buf);
-		for(int i=0;i<numbytes;i++){
-		  printf("%0x ",buf[i]);
-		}
-		printf("\n");
+
 		
 		
 	}
