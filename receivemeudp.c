@@ -157,7 +157,10 @@ int main(int argc, char *argv[])
 
 		numwritten=fwrite(buf,1,numbytes,fptr);
 
-		printf("'");
+
+		int bob=sendto(sockfd, buf, numbytes, 0, (struct sockaddr *)&their_addr, addr_len);
+		printf("sent %d bytes. , %s \n'",bob,strerror(errno));
+		/*
 		for(int k=0;k<20;k++){
 			printf("%c",buf[k]);
 		}
@@ -166,7 +169,9 @@ int main(int argc, char *argv[])
 		sentTotByte+=numwritten;
 		fflush(fptr);
 		printf("\nWritten %d bytes \n",sentTotByte);
-		alarm(1);
+		*/
+
+		alarm(10);
 	}
 	close(sockfd);
 		fclose(fptr);

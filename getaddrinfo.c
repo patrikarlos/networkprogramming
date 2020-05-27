@@ -18,8 +18,11 @@ main(int argc, char **argv){
   char addrstring[100];
   
   bzero(&hints, sizeof(hints));
+  hints.ai_family = 0; // AF_INET6;
+  hints.ai_socktype=0;// SOCK_STREAM;
+  hints.ai_protocol=0;
   hints.ai_flags = AI_CANONNAME;
-  hints.ai_family = AF_INET;
+
   
   while (--argc > 0) {
     ptr = *++argv;
