@@ -4,7 +4,7 @@
 #include<string.h>//memset
 #include<stdlib.h>//sizeof
 #include<netinet/in.h>//INADDR_ANY
-
+#include<errno.h>
 #define PORT 4950
 #define MAXSZ 1400
 int childCnt;
@@ -60,11 +60,11 @@ int main()
  char cli[INET6_ADDRSTRLEN];
  char s[INET6_ADDRSTRLEN];
 
-  
+ int rv;
  memset(msg,'A',MAXSZ);
  msg[MAXSZ-1]='\n';
  
- 
+ printf("My port = %d \n", PORT);
  //create socket
  listenfd=socket(AF_INET,SOCK_STREAM,0);
  //initialize the socket addresses
@@ -74,7 +74,12 @@ int main()
  serverAddress.sin_port=htons(PORT);
 
  //bind the socket with the server address and port
- bind(listenfd,(struct sockaddr *)&serverAddress, sizeof(serverAddress));
+ rv = bind(listenfd,(struct sockaddr *)&serverAddress, sizeof(serverAddress));
+
+ if (rv == -1 ){
+   fprintf(stderr, "bind: %s \n",strerror(errno));
+   exit(1);
+ }
 
 
  printf("Bob\n");
@@ -96,8 +101,11 @@ int main()
 
   
  //listen for connection from client
- listen(listenfd,5);
-
+ rv=listen(listenfd,1);
+ if(rv == -1 )
+   {
+     fprintf(stderr, "Issues %s.\n", strerror(errno));
+   }
  while(1) {
    //parent process waiting to accept a new connection
    printf("\n*****server waiting for new client connection:*****\n");
@@ -116,11 +124,17 @@ int main()
    get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
    
    printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
-   int dropcnt=5;
+   int dropcnt=5000;
+   char msgChar='A';
    while(dropcnt>0){
+     memset(msg,msgChar,MAXSZ);      
      n=send(connfd,msg,MAXSZ,0);	 
      printf("Child[%d](%d) (%s:%d): Sent (%d) .\n", childCnt,dropcnt,cli,ntohs(clientAddress.sin_port),n);
      sleep(1);
+     msgChar++;
+     if (msgChar > 'Z') {
+       msgChar='A';
+     }
      dropcnt--;     
    }
    shutdown(connfd, SHUT_RDWR);
