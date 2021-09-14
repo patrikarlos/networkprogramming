@@ -4,6 +4,7 @@
 #include<string.h>//memset
 #include<stdlib.h>//sizeof
 #include<netinet/in.h>//INADDR_ANY
+#include <errno.h> // errno
 
 #define PORT 4950
 #define MAXSZ 1400
@@ -14,8 +15,11 @@ void *get_in_addr(struct sockaddr *sa)
 	if (sa->sa_family == AF_INET) {
 		return &(((struct sockaddr_in*)sa)->sin_addr);
 	}
-
-	return &(((struct sockaddr_in6*)sa)->sin6_addr);
+	if (sa->sa_family == AF_INET6) {
+	  	return &(((struct sockaddr_in6*)sa)->sin6_addr);
+	}
+	printf("Unknown FAMILY!!!!\n");
+	return(0); 
 }
 
 
@@ -61,61 +65,86 @@ int main()
  char s[INET6_ADDRSTRLEN];
 	
  //create socket
- listenfd=socket(AF_INET,SOCK_STREAM,0);
+ listenfd=socket(AF_INET,SOCK_STREAM,0);  // IPv4, SOCK-steam + TCP. 
+ /* what if socket failed?? */
+ 
  //initialize the socket addresses
  memset(&serverAddress,0,sizeof(serverAddress));
  serverAddress.sin_family=AF_INET;
- serverAddress.sin_addr.s_addr=htonl(INADDR_ANY);
+ serverAddress.sin_addr.s_addr=htonl(INADDR_ANY); // =INADDR_ANY
  serverAddress.sin_port=htons(PORT);
 
  //bind the socket with the server address and port
- bind(listenfd,(struct sockaddr *)&serverAddress, sizeof(serverAddress));
+ int rc=bind(listenfd,(struct sockaddr *)&serverAddress, sizeof(serverAddress));
+ if (rc!=0){
+   printf("Cannot bind, Got problems, %d. \n", errno);
+   printf("Issue being: %s \n", strerror(errno) );
+   return;
+ } 
 
  //listen for connection from client
- listen(listenfd,5);
+ rc=listen(listenfd,1);
+ if(rc!=0){
+     printf("Cannot listen, Got problems, %d. \n", errno);
+     return;
+ }
+ 
  printf("Listening on port %d \n",PORT);
+
+ /*----------------------------- */ 
+ 
  while(1) {
    //parent process waiting to accept a new connection
    printf("\n*****server waiting for new client connection:*****\n");
    clientAddressLength=sizeof(clientAddress);
    connfd=accept(listenfd,(struct sockaddr*)&clientAddress,&clientAddressLength);
-   printf("accept = %d \n", connfd );
+   /* Check rv of accept */ 
+   printf("accept = %d listenfd = %d \n", connfd, listenfd );
    childCnt++;
    
-   printf("listener: got packet from %s:%d\n",
-	  inet_ntop(clientAddress.sin_family,
-		    get_in_addr((struct sockaddr *)&clientAddress),
-		    s, sizeof s),ntohs(clientAddress.sin_port));
    
+   int q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), cli, sizeof(cli));
+   printf("q = %d \n",q); 
+   printf("listener: got packet from %s:%d\n", cli,ntohs(clientAddress.sin_port));
+    
    //child process is created for serving each new clients
    pid=fork();
    if(pid==0)//child process rec and send
      {
-       printf("Im child %d.\n", childCnt);
+       close(listenfd);//sock is closed BY child
+       printf("Im childm (PID=%d)  %d.\n", pid, childCnt);
        //rceive from client
        get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
        
        while(1){
-	 n=recv(connfd,msg,MAXSZ,0);
-	 printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
-	 if(n==0){
-	   printf("Child [%d]: Im dying...",childCnt);
-	   close(connfd);
-	   break;
-	 }
-	 msg[n]=0;
-	 send(connfd,msg,n,0);	 
-	 printf("Child[%d]: (x:y) Receive and set:%s\n",childCnt,msg);
+        n=recv(connfd,msg,MAXSZ,0);
+        printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
+        if(n==0){
+            printf("Child [%d]: Im dying...",childCnt);
+            close(connfd);
+            break;
+        }
+	if(n==-1){
+	  printf("Chile [%d]: Issues %s.\n", strerror(errno));
+	  close(connfd);
+	  break;
+       }
+        msg[n]=0;
+        send(connfd,msg,n,0);	 
+        printf("Child[%d]: (x:y) Receive and set:%s\n",childCnt,msg);
        }//close interior while
        exit(0);
      }
    else {
      printf("Parent, close connfd().\n");
      close(connfd);//sock is closed BY PARENT
-	 if(childCnt>5){
-		 printf("Being a bad parent.\n");
-		 sleep(10);
-	 }
+     /*
+     if(childCnt>0){
+       printf("Being a bad parent.\n");
+       sleep(100);
+       printf("done sleeping.\n");
+     }
+     */
    }
  }//close exterior while
  
