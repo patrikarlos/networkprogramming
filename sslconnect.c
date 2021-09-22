@@ -17,7 +17,7 @@ sudo apt-get install libssl–dev
 
 Before compiling the client and server program you will need a Certificate. You can generate your own certificate using the below command.
 
-openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycert.pem -out mycert.pem
+openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout mycert.pem -out mycert.pem
 
 Note: Here certificate name is mycert.pem.
 
@@ -95,7 +95,7 @@ int main(int count, char *strings[])
     int server;
     SSL *ssl;
     char buf[1024];
- char acClientRequest[1024] ={0};
+    char acClientRequest[1024] ={0};
     int bytes;
     char *hostname, *portnum;
  
