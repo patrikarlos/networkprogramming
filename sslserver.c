@@ -113,7 +113,7 @@ void ShowCerts(SSL* ssl)
         X509_free(cert);
     }
     else
-        printf("No certificates.\n");
+        printf("No Peer certificates.\n");
 }
  
 void Servlet(SSL* ssl) /* Serve the connection -- threadable */
@@ -163,11 +163,14 @@ int main(int count, char *Argc[])
  
  
  //Only root user have the permsion to run the server
+    /*
     if(!isRoot())
     {
         printf("This program must be run as root/sudo user!!");
         exit(0);
     }
+    */
+    
     if ( count != 2 )
     {
         printf("Usage: %s <portnum>\n", Argc[0]);
