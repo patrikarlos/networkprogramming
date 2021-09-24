@@ -16,6 +16,7 @@
 
 #define SERVERPORT "4950"	// the port users will be connecting to
 
+
 int main(int argc, char *argv[])
 {
 	int sockfd;
@@ -30,11 +31,23 @@ int main(int argc, char *argv[])
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;// AF_INET , AF_INET6
+	//hints.ai_family = AF_INET; // , AF_INET6
 	hints.ai_socktype = SOCK_DGRAM;
 
+	char myBuffer[1000];
+	FILE *myFile=fopen("dumper","w+");
+	
 	printf("Getting info.\n");
 	if ((rv = getaddrinfo(argv[1], SERVERPORT, &hints, &servinfo)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+
+		//		cout << "Hej World" << endl;
+		printf("Hej World.\n");
+		printf("Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> STDOUT| stdout
+		fprintf(myFile,"Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> <fd>
+		fprintf(stderr,"ERROR: Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> stderr
+		fprintf(stdout,"OUT: Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> stdout
+		sprintf(&myBuffer, "Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> myBuffer		
 		return 1;
 	}
 	printf("Got info.\n");
@@ -49,13 +62,16 @@ int main(int argc, char *argv[])
 		break;
 	}
 	
-	
+	/* HERE */ 
 	if (p == NULL) {
 		fprintf(stderr, "talker: failed to create socket\n");
 		return 2;
 	}
 
-	char myAddress[20];
+	printf("sockfd == %d \n",sockfd );
+	/* We have a socket! */
+	
+	char myAddress[30];
 	char *myAdd=&myAddress;
 
 	struct sockaddr_in local_sin;
@@ -76,7 +92,7 @@ int main(int argc, char *argv[])
 	  getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
 	  
 	  myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
-	  printf("Sending from  %s:%d, sent %d bytes. \n", myAdd, ntohs(local_sin.sin_port),numbytes);
+	  printf("Sending from  %s:%d, sent %d bytes ('%s'). \n", myAdd, ntohs(local_sin.sin_port),numbytes,argv[q]);
 	  
 	}
 	
