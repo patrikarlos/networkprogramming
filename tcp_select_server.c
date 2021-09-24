@@ -47,7 +47,11 @@ int main(void)
 
     FD_ZERO(&master);    // clear the master and temp sets
     FD_ZERO(&read_fds);
+    // master: [0 1 2 3 4 5 6 ..... 22 23 .... ] (<1024) Linux (1)
+    //          ? ? ? ? ? ? ?       ?  ?       ]
+    //          0 0 0 0 0 0 0       0  0       ]
 
+    
     // get us a socket and bind it
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
@@ -91,6 +95,9 @@ int main(void)
 
     // add the listener to the master set
     FD_SET(listener, &master);
+    //                  *                        * fdmax 
+    // master: [0 1 2 3 4 5 6 ..... 22 23 .... ] (<1024) Linux
+    //          0 0 0 0 1 0 0 ..... 0  0  .... ]
 
     // keep track of the biggest file descriptor
     fdmax = listener; // so far, it's this one
@@ -98,6 +105,14 @@ int main(void)
     // main loop
     for(;;) {
         read_fds = master; // copy it
+
+	//              *
+    // master: [0 1 2 3 4 5 6 ..... 22 23 .... ] (<1024) Linux
+    //          0 0 0 0 1 0 0 ..... 0  0  .... ]
+    //   -->
+    //          0 0 0 0 1 0 0 ..... 0  0  .... ]   READY
+    //          0 0 0 0 0 0 0 ..... 0  0  .... ]   NOT READY	
+	
         if (select(fdmax+1, &read_fds, NULL, NULL, NULL) == -1) {
             perror("select");
             exit(4);
@@ -132,7 +147,7 @@ int main(void)
                     if ((nbytes = recv(i, buf, sizeof buf, 0)) <= 0) {
                         // got error or connection closed by client
                         if (nbytes == 0) {
-                            // connection closed
+                            // connection closed?? 
                             printf("selectserver: socket %d hung up\n", i);
                         } else {
                             perror("recv");
