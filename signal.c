@@ -1,8 +1,3 @@
-/*
-** listener.c -- a datagram sockets "server" demo
-** From http://beej.us/guide/bgnet/examples/listener.c
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -17,18 +12,21 @@
 
 // Helper function you can use:
 int run;
+int rems;
 
 void  ALARMhandler(int sig)
 {
   signal(SIGALRM, SIG_IGN);          /* ignore this signal       */
-  printf("Hello Alarm\n");
+  rems=alarm(2);
+  printf("Hello Alarm, run = %d rems = %d \n", run, rems);
+
   signal(SIGALRM, ALARMhandler);     /* reinstall the handler    */
 }
 
 void  INThandler(int sig)
 {
   signal(SIGINT, SIG_IGN);          /* ignore this signal       */
-  printf("Hello Int\n");
+  printf("Hello Int \n");
   run++;
   signal(SIGINT, INThandler);     /* reinstall the handler    */
 }
@@ -37,14 +35,21 @@ void  QUIThandler(int sig)
 {
   signal(SIGQUIT, SIG_IGN);          /* ignore this signal       */
   printf("Hello Quit.\n");
-  signal(SIGQUIT, INThandler);     /* reinstall the handler    */
+  signal(SIGQUIT, QUIThandler);     /* reinstall the handler    */
 }
 
 void  STPhandler(int sig)
 {
   signal(SIGTSTP, SIG_IGN);          /* ignore this signal       */
-  printf("Hello STP\n");
-  signal(SIGTSTP, INThandler);     /* reinstall the handler    */
+  printf("Hello STP, %d\n", sig);
+  signal(SIGTSTP, STPhandler);     /* reinstall the handler    */
+}
+
+void  PIPEhandler(int sig)
+{
+  signal(SIGPIPE, SIG_IGN);          /* ignore this signal       */
+  printf("Hello PIPE, %d\n", sig);
+  signal(SIGPIPE, PIPEhandler);     /* reinstall the handler    */
 }
 
 
@@ -57,11 +62,16 @@ int main(int argc, char *argv[]){
   */
   
   run=0;
-  
+
+  /* Test various combinations to see what signals can be caught */
   signal(SIGINT, INThandler);
-  //  signal(SIGALRM, ALARMhandler);
-  //  signal(SIGQUIT, QUIThandler);
-  //  signal(SIGTSTP, STPhandler);  
+  signal(SIGALRM, ALARMhandler);
+  signal(SIGQUIT, QUIThandler);
+  signal(SIGTSTP, STPhandler);
+  signal(SIGPIPE, PIPEhandler);  
+  
+  rems=alarm(2);
+  printf("We got %d rems.\n", rems);
   
   
   while(run<10){
