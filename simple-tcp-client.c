@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 	  perror("talker2: connect .\n");
 	  exit(1);
 	}
-
+	/* ------------- */
 	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
 		  s, sizeof s);
 	printf("client: connecting to %s\n", s);
@@ -83,7 +83,8 @@ int main(int argc, char *argv[])
 	}
 	
 	buf[numbytes] = '\0';
-	
+
+
 	printf("client: received '%s'\n",buf);
 	char lineBuffer[MAXDATASIZE];
 	char *lBptr=(char*)&lineBuffer;
