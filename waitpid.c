@@ -17,7 +17,7 @@ int main(void)
       printf("This is the child\n");
       sleep(1);
     }
-    exit(3);
+    exit(2);
   } else {
     int stat_val;
     waitpid(pid, &stat_val, 0);
