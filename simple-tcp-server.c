@@ -16,7 +16,6 @@
 #include <signal.h>
 
 #define PORT "4950"  // the port users will be connecting to
-
 #define BACKLOG 1	 // how many pending connections queue will hold
 #define SECRETSTRING "gimboid"
 
@@ -120,38 +119,39 @@ int main(void)
 	
 	while(1) {  // main accept() loop
 	  sin_size = sizeof(their_addr);
-		new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
-		if (new_fd == -1) {
-			perror("accept");
-			continue;
-		}
+	  new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
+	  if (new_fd == -1) {
+	    perror("accept");
+	    continue;
+	  }
+	  /* ------------- */
+	  inet_ntop(their_addr.ss_family,
+		    get_in_addr((struct sockaddr *)&their_addr),
+		    s, sizeof s);
+	  printf("server: Connection %d from %s\n",childCnt, s);
+	  
+	  printf("server: Sending welcome \n");
+	  struct sockaddr_in *local_sin=(struct sockaddr_in*)&their_addr;
+	  if (send(new_fd, "Hello, world!", 13, 0) == -1){
+	    perror("send");
+	    close(new_fd);
+	    continue; //leave loop execution, go back to the while, main accept() loop. 
+	  }
 
-		inet_ntop(their_addr.ss_family,
-			get_in_addr((struct sockaddr *)&their_addr),
-			s, sizeof s);
-		printf("server: Connection %d from %s\n",childCnt, s);
+	  while(1){
+	    readSize=recv(new_fd,&msg,MAXSZ,0);
+	    printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,s,ntohs(local_sin->sin_port),readSize);
+	    if(readSize==0){
+	      printf("Child [%d] died.\n",childCnt);
+	      close(new_fd);
+	      break;
+	    }
+	    msg[readSize]=0;
 
-		printf("server: Sending welcome \n");
-		struct sockaddr_in *local_sin=(struct sockaddr_in*)&their_addr;
-		if (send(new_fd, "Hello, world!", 13, 0) == -1){
-		  perror("send");
-		  close(new_fd);
-		  continue; //leave loop execution, go back to the while, main accept() loop. 
-		}
-		while(1){
-		  readSize=recv(new_fd,&msg,MAXSZ,0);
-		  printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,s,ntohs(local_sin->sin_port),readSize);
-		  if(readSize==0){
-		    printf("Child [%d] died.\n",childCnt);
-		    close(new_fd);
-		    break;
-		  }
-		  msg[readSize]=0;
-
-		  int rv=sscanf(msg,"%s ",command);
-		  printf("rv=%d Decoded command as: %s \n",rv,command);
-
-		  if(strcmp(command,"close")==0){
+	    int rv=sscanf(msg,"%s ",command);
+	    printf("rv=%d Decoded command as: %s \n",rv,command);
+	    
+	    if(strcmp(command,"close")==0){
 		    // Client sent 'command', check that it provided the correct magic word.\n");
 		    rv=sscanf(msg,"%s %s",command,optionstring);
 		    printf("rv=%d Decoded command + option as: %s %s\n",rv,command,optionstring);
