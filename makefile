@@ -15,14 +15,16 @@ TMP = $(SRCS:.c=.c~)
 
 
 
-OBJ = *.o *.c~ talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrrupted macros broadcast_udp
+OBJ = *.o *.c~ talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrrupted macros broadcast_udp support
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrupted macros broadcast_udp
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrupted macros broadcast_udp support
 
 
 
 
 # targets
+support: support.c
+	$(CC) -Wall -o support support.c
 
 broadcast_udp: broadcast_udp.c
 	$(CC) -Wall -o broadcast_udp broadcast_udp.c 
