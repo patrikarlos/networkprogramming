@@ -10,19 +10,25 @@ endif
 # Declaration of variables
 CC = gcc
 CC_FLAGS = -w -g
- 
+TMP = $(SRCS:.c=.c~) 
 
 
 
 
-OBJECTS = $(wildcard *.o talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions )
+OBJ = *.o *.c~ talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls 
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls
 
 
 
 
 # targets
+sslc: sslconnect.o
+	$(CC) -Wall -o sslc sslconnect.c -lssl -lcrypto
+ssls: sslserver.o
+	$(CC) -Wall -o ssls sslserver.c -lssl -lcrypto
+signal: signal.o
+	$(CC) signal.o -o signal
 security1: security1.o
 	$(CC) security1.o -o security1 -lcrypto
 
@@ -96,4 +102,5 @@ socketoptions: socketoptions.o
  
 # To remove generated files
 clean:
-	rm -f talker $(OBJECTS)
+	rm -f $(OBJ)
+
