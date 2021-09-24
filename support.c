@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
   //  printf("bob.sin_len = %p  ==> %ld \n", &bob.sin_len,(unsigned char*)ptr->sin_len-(unsigned char*)ptr );
   printf("bob.sin_family = %p  ==> %d \n", &bob.sin_family,(unsigned char*)ptr->sin_family-(unsigned char*)ptr );
   printf("bob.sin_port   = %p  ==> %d \n", &bob.sin_port,(unsigned char*)ptr->sin_port-(unsigned char*)ptr );
-  printf("bob.sin_addr   = %p  ==> %ld \n",&bob.sin_addr,(unsigned char*)ptr->sin_addr-(unsigned char*)ptr );
+  //  printf("bob.sin_addr   = %p  ==> %ld \n",&bob.sin_addr,(unsigned char*)ptr->sin_addr-(unsigned char*)ptr );
   printf("bob.sin_addr   = %p  ==>  \n", &bob.sin_addr);
   printf("bob.sin_zero   = %p  ==> %ld \n", &bob.sin_zero,(unsigned char*)ptr->sin_zero-(unsigned char*)ptr );
   
