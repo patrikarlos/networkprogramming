@@ -15,14 +15,17 @@ TMP = $(SRCS:.c=.c~)
 
 
 
-OBJ = *.o *.c~ talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrrupted macros
+OBJ = *.o *.c~ talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrrupted macros broadcast_udp
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrupted macros
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrupted macros broadcast_udp
 
 
 
 
 # targets
+
+broadcast_udp: broadcast_udp.c
+	$(CC) -Wall -o broadcast_udp broadcast_udp.c 
 
 ## By adding -D<variable_name> we can add defines from compiler arguments. 
 macros: macros.c
