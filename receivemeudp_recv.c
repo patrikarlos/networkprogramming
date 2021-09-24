@@ -142,12 +142,12 @@ int main(int argc, char *argv[])
 	  addr_len = sizeof their_addr;
 	  numbytes = recv(sockfd, buf, MAXBUFLEN-1 , 0);
 	  if (numbytes  == -1) {
-          printf("Errno == %d -- %s \n",errno, strerror(errno));
-          
-          if(sockfd!=NULL){
-            perror("recv");
+	    printf("Errno == %d -- %s \n",errno, strerror(errno));
+	    
+	    if(sockfd!=NULL){
+	      perror("recv");
             }
-          exit(1); 
+	    exit(1); 
 	  }
 	  
 	  printf("listener: from <unknown>  %d bytes",numbytes);
