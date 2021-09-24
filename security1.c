@@ -6,7 +6,6 @@
 /* 
 Origin: 
 https://wiki.openssl.org/index.php/EVP_Symmetric_Encryption_and_Decryption
-
 gcc -lcrypto security1.c
 
 */
@@ -63,6 +62,7 @@ int main (void)
   /* Show the decrypted text */
   printf("Decrypted text is:\n");
   printf("%s\n", decryptedtext);
+  printf("Ciphertext is:\n");
   printf("%s\n",ciphertext);
   
   return 0;
