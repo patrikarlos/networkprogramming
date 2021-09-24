@@ -19,9 +19,9 @@ main(int argc, char **argv){
   
   bzero(&hints, sizeof(hints));
   hints.ai_family = 0; // AF_INET6;
-  hints.ai_socktype=0;// SOCK_STREAM;
+  hints.ai_socktype=0; //SOCK_STREAM;
   hints.ai_protocol=0;
-  hints.ai_flags = AI_CANONNAME;
+  hints.ai_flags = AI_ALL; //AI_CANONNAME;
 
   
   while (--argc > 0) {
@@ -35,7 +35,7 @@ main(int argc, char **argv){
     bob = res;
     do {
       inet_ntop(bob->ai_family, &((struct sockaddr_in *)bob->ai_addr)->sin_addr,addrstring,100);
-      printf(" hostname: %s %s %d %p\n", bob->ai_canonname,addrstring,bob->ai_protocol, bob->ai_next);
+      printf(" hostname: %s IP; %s Protocol; %d \n", bob->ai_canonname,addrstring,bob->ai_protocol );
       bob = bob->ai_next;
     } while (bob != NULL );
   }
