@@ -52,16 +52,40 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 
+	char myAddress[30];
+	char *myAdd=&myAddress;
+
+	struct sockaddr_in local_sin;
+	socklen_t local_sinlen = sizeof(local_sin);
+	getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
+
+	myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
+	printf("Sending1 from  %s:%d \n", myAdd, ntohs(local_sin.sin_port));
+
+	
 	if (connect(sockfd,p->ai_addr, p->ai_addrlen) < 0 ) {
 	  perror("talker2: connect .\n");
 	  exit(1);
-	}
+	} 
+
+	
+
+	getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
+
+	myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
+	printf("Sending2 from  %s:%d \n", myAdd, ntohs(local_sin.sin_port));
 	
 	if ((numbytes = send(sockfd, argv[2], strlen(argv[2]), 0)) == -1) {
 		perror("talker2: sendto");
 		exit(1);
 	}
 
+	
+	getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
+
+	myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
+	printf("Sending3 from  %s:%d \n", myAdd, ntohs(local_sin.sin_port));
+	
 	freeaddrinfo(servinfo);
 
 	printf("talker2: sent %d bytes to %s\n", numbytes, argv[1]);
