@@ -15,8 +15,7 @@
 #include <netdb.h>
 
 #define MYPORT "4950"	// the port users will be connecting to
-
-#define MAXBUFLEN 100
+#define MAXBUFLEN 100   // What does this do?
 
 // Helper function you can use:
 
@@ -83,7 +82,7 @@ int main(void)
 			perror("listener: socket");
 			continue;
 		}
-
+		/* up to this point its similar as client */ 
 		if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
 			close(sockfd);
 			perror("listener: bind");
