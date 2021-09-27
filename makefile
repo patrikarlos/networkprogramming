@@ -26,11 +26,11 @@ all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrin
 tc: trivial-tcp-server.c
 	$(CC) -Wall -o tc trivial-tcp-server.c
 
+iomodels-blocking: io-models-blocking.c
+	$(CC) -Wall -o iomodels-blocking io-models-blocking.c
+
 iomodels-nonblocking: io-models-nonblocking.c
 	$(CC) -Wall -o iomodels-nonblocking io-models-nonblocking.c
-
-iomodels-nonblocking: io-models-blocking.c
-	$(CC) -Wall -o iomodels-blocking io-models-blocking.c
 
 iomodels-signal: io-models-signal.c
 	$(CC) -Wall -o iomodels-signal io-models-signal.c
