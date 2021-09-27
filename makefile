@@ -15,14 +15,26 @@ TMP = $(SRCS:.c=.c~)
 
 
 
-OBJ = *.o *.c~ talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrrupted macros broadcast_udp support
+OBJ = *.o *.c~ talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrrupted macros broadcast_udp support iomodels-block iomodels-nonblocking iomodels-signal tc
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrupted macros broadcast_udp support
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrupted macros broadcast_udp support iomodels-block iomodels-nonblocking iomodels-signal tc
 
 
 
 
 # targets
+tc: trivial-tcp-server.c
+	$(CC) -Wall -o tc trivial-tcp-server.c
+
+iomodels-nonblocking: io-models-nonblocking.c
+	$(CC) -Wall -o iomodels-nonblocking io-models-nonblocking.c
+
+iomodels-nonblocking: io-models-blocking.c
+	$(CC) -Wall -o iomodels-blocking io-models-blocking.c
+
+iomodels-signal: io-models-signal.c
+	$(CC) -Wall -o iomodels-signal io-models-signal.c
+
 support: support.c
 	$(CC) -Wall -o support support.c
 
