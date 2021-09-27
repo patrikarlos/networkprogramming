@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
       if(numbytes == -1 ){
 	if (errno == EWOULDBLOCK ) {
 	  printf("EWOULDBLOCK.\n");
-	  sleep(1);
+	  usleep(500000);
 	  continue;
 	}
 	

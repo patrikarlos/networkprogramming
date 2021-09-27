@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <ctype.h>
+#include <sys/time.h>
 
 #include <netdb.h>
 #include <sys/types.h>
@@ -111,12 +112,16 @@ int main(int argc, char *argv[])
 
     char outBuffer[60];
     char outASCIIBuffer[60];
-    
+    struct timeval then, now,diff;
+     
     while(1){
       memset(&buffer, 0, MAXDATA);
       memset(&outASCIIBuffer, 0, 60);
       memset(&outBuffer, 0, 60);
+      gettimeofday(&then, NULL);
       numbytes = recv(sockfd, buffer, MAXDATA-1, 0);
+      gettimeofday(&now, NULL);
+      timersub(&now,&then,&diff);
       if(numbytes == -1 ){
         perror("recv");
 	/* close socket */
@@ -130,7 +135,7 @@ int main(int argc, char *argv[])
       totalBytes+=numbytes;
       memcpy(&outBuffer,&buffer,20);
       
-      printf("client (%d/%d) : received \n",numbytes, totalBytes);
+      printf("client (%d/%d)  %ld.%06ld : received \n",numbytes, totalBytes, diff.tv_sec,diff.tv_usec );
       for(int i=0; i<10;i++){
 	if( isprint(outBuffer[i])) {
 	  printf("%c    ",outBuffer[i]);

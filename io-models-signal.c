@@ -49,8 +49,6 @@ int io_handler(int sig){
   printf("io_handler %d \n", sig);
 
 
-
-
   char outBuffer[60];
   char outASCIIBuffer[60];
     
