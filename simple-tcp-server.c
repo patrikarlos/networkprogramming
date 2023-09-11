@@ -98,6 +98,7 @@ int main(void)
 		exit(1);
 	}
 
+
 	sa.sa_handler = sigchld_handler; // reap all dead processes
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
@@ -105,6 +106,7 @@ int main(void)
 		perror("sigaction");
 		exit(1);
 	}
+
 
 	printf("server: waiting for connections BINJER...\n");
 	char msg[1500];

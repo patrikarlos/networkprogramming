@@ -1,6 +1,10 @@
 #include <errno.h>
 #include <unistd.h>
+
+#ifndef MacBuild
 #include <malloc.h>
+#endif
+
 #include <string.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>

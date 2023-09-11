@@ -52,6 +52,19 @@ void  PIPEhandler(int sig)
   signal(SIGPIPE, PIPEhandler);     /* reinstall the handler    */
 }
 
+void HANGUP(int sig){
+  signal(SIGHUP, SIG_IGN);          /* ignore this signal       */
+  printf("HELLO HANGUP!\n");
+  signal(SIGHUP, HANGUP);
+}
+
+void KILLED(int sig){
+  signal(SIGKILL, SIG_IGN);          /* ignore this signal       */
+  printf("SIG KILL\n");
+  signal(SIGKILL, KILLED);
+}
+
+
 
 int main(int argc, char *argv[]){
   /*
@@ -63,12 +76,17 @@ int main(int argc, char *argv[]){
   
   run=0;
 
+  int q1,q2;
   /* Test various combinations to see what signals can be caught */
   signal(SIGINT, INThandler);
   signal(SIGALRM, ALARMhandler);
   signal(SIGQUIT, QUIThandler);
   signal(SIGTSTP, STPhandler);
-  signal(SIGPIPE, PIPEhandler);  
+  signal(SIGPIPE, PIPEhandler);
+  q1=signal(SIGHUP, HANGUP);
+  q2=signal(SIGKILL, KILLED);
+  printf("q1=%d , q2=%d \n", q1, q2);
+  
   
   rems=alarm(2);
   printf("We got %d rems.\n", rems);

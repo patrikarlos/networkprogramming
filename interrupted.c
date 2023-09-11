@@ -11,7 +11,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <string.h>
-
+#include <signal.h> //MAC
 #define TESTS 10
 #define MAXDATASIZE 100
 int doit;
@@ -143,7 +143,7 @@ int main(void)
   hints.ai_socktype = SOCK_STREAM;
 
   /* May require adaptation, to pick a port that isnt used. AFAIK helicon does not use port 65000. */
-  if ((rv = getaddrinfo("helicon.nplab.bth.se", "222", &hints, &servinfo)) != 0) {
+  if ((rv = getaddrinfo("helicon.nplab.bth.se", "65000", &hints, &servinfo)) != 0) {
     fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
     return 1;
   }

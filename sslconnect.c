@@ -1,7 +1,12 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
+
+#ifndef MacBuild
 #include <malloc.h>
+#endif
+
 #include <string.h>
 #include <sys/socket.h>
 #include <resolv.h>
@@ -141,3 +146,4 @@ int main(int count, char *strings[])
     SSL_CTX_free(ctx);        /* release context */
     return 0;
 }
+

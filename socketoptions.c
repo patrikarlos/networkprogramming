@@ -71,14 +71,16 @@ main()
 	printf("TCPNODELAY= %d\n", len);
   }
 
-#ifndef WinBuild
+#ifdef WinBuild
+  printf("Windows has no TCP_CORK.\n");
+#elifdef MacBuild
+  printf("MAC has no TCP_CORK.\n");
+#else 
   if (getsockopt(sockfd, IPPROTO_TCP, TCP_CORK, &len, &i) < 0) {
     perror(": getsockopt SO_TCPNODELAY");
   } else {
 	printf("TCPCORK= %d\n", len);
   }
-#else
-  printf("Windows has no TCP_CORK.\n");
 #endif
   
   

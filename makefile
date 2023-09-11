@@ -2,22 +2,38 @@ ifeq ($(OS),Windows_NT)
 	uname_S := Windows
 	WinBuild = 1
 	BFLAGS= -DWinBuild
-else 
+else
 	uname_S := $(shell uname -s)
-	BFLAGS= 	
+	ifeq ($(uname_S),Darwin)
+		uname_S := DARWIN
+		MacBuild = 1
+		LDFLAGS="-L/opt/homebrew/opt/openssl/lib"
+		CPPFLAGS="-I/opt/homebrew/opt/openssl/include"
+		BFLAGS= -DMacBuild
+	else 
+		WinBuild = 0
+		BFLAGS= 	
+	endif
 endif
+
+
+$(info $$uname_S is [${uname_S}])
+$(info $$LDFLAGS is [${LDFLAGS}])
+$(info $$CPPFLAGS is [${CPPFLAGS}])
+$(info $$BFLAGS is [${BFLAGS}])
+
 
 # Declaration of variables
 CC = gcc
-CC_FLAGS = -w -g
+CC_FLAGS = -w -g $(CPPFLAGS)
 TMP = $(SRCS:.c=.c~) 
 
 
 
 
-OBJ = *.o *.c~ talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrrupted macros broadcast_udp support iomodels-block iomodels-nonblocking iomodels-signal tc
+OBJ = *.o *.c~ talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudpreceivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrrupted macros broadcast_udp support iomodels-blocking iomodels-nonblocking iomodels-signal tc
 
-all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrupted macros broadcast_udp support iomodels-block iomodels-nonblocking iomodels-signal tc
+all: talker talker2 listener showip conlisten genlisten hostent ptrent getaddrinfo givemeSockets security1 tcpechoserv sendmeudp receivemeudp receivemeudp_recv  tcpbasicclient simptcplisten ticlient tiserver simpletcpserver simpletcpclient socketoptions signal sslc ssls interrupted macros broadcast_udp support iomodels-blocking iomodels-nonblocking iomodels-signal tc
 
 
 
@@ -48,14 +64,14 @@ macros: macros.c
 interrupted: interrupted.o
 	$(CC) -Wall -o interrupted interrupted.c
 
-sslc: sslconnect.o
-	$(CC) -Wall -o sslc sslconnect.c -lssl -lcrypto
+sslc: sslconnect.o 
+	$(CC) -Wall $(CC_FLAGS) $(BFLAGS)  -o sslc sslconnect.c -lssl -lcrypto $(LDFLAGS)
 ssls: sslserver.o
-	$(CC) -Wall -o ssls sslserver.c -lssl -lcrypto
+	$(CC) -Wall $(CC_FLAGS) $(BFLAGS) -o ssls sslserver.c -lssl -lcrypto $(LDFLAGS)
 signal: signal.o
 	$(CC) signal.o -o signal
 security1: security1.o
-	$(CC) security1.o -o security1 -lcrypto
+	$(CC) security1.o -o security1 -lcrypto -lssl $(LDFLAGS)
 
 givemeSockets: givemeSockets.o
 	$(CC) givemeSockets.o -o givemeSockets

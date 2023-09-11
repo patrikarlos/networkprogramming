@@ -4,6 +4,8 @@
 #include<string.h>//memset
 #include<stdlib.h>//sizeof
 #include<netinet/in.h>//INADDR_ANY
+#include <arpa/inet.h> // MAC inet_ntop
+#include <unistd.h> // MAC fork
 
 #define PORT 4950
 #define MAXSZ 1400

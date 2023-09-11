@@ -112,6 +112,11 @@ int main(void)
 	printf("AF_INET = %d and AF_INET6 = %d and AF_UNSPEC  = %d  and AF_UNIX = %d \n", AF_INET, AF_INET6, AF_UNSPEC, AF_UNIX);
 	
 	char mySend[100000];
+	/* Missing for TCP server.
+	   listen()
+	   accept() 
+	*/
+
 	
 	while(1){
 		addr_len = sizeof their_addr;

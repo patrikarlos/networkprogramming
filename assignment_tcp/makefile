@@ -8,10 +8,10 @@ all: sendto receive
 
 
 sendto: sendmetcp.o
-	$(CC) sendmetcp.o -o sendto
+	$(CC) sendmetcp.o -o sendto  -lssl -lcrypto
 
 receive: receivemetcp.o
-	$(CC) receivemetcp.o -o receive
+	$(CC) receivemetcp.o -o receive  -lssl -lcrypto
 
 ### Build stuff
 # To obtain object files

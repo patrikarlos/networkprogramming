@@ -6,6 +6,8 @@
 #include<netinet/in.h>//INADDR_ANY
 #include <errno.h> // errno
 #include <sys/time.h>
+#include <unistd.h> //MAc close
+#include <arpa/inet.h> // MAC inet_ntop
 
 #define PORT 4950
 #define MAXSZ 1400
@@ -104,14 +106,14 @@ int main()
  if (rc!=0){
    printf("Cannot bind, Got problems, %d. \n", errno);
    printf("Issue being: %s \n", strerror(errno) );
-   return;
+   return -1;
  } 
 
  //listen for connection from client
  rc=listen(listenfd,1);
  if(rc!=0){
      printf("Cannot listen, Got problems, %d. \n", errno);
-     return;
+     return -1;
  }
  
  printf("Listening on port %d \n",PORT);

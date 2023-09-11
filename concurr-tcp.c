@@ -5,6 +5,8 @@
 #include<stdlib.h>//sizeof
 #include<netinet/in.h>//INADDR_ANY
 #include <errno.h> // errno
+#include <arpa/inet.h> // MAC inet_ntop
+#include <unistd.h> // MAC fork
 
 #define PORT 4950
 #define MAXSZ 1400
@@ -79,14 +81,14 @@ int main()
  if (rc!=0){
    printf("Cannot bind, Got problems, %d. \n", errno);
    printf("Issue being: %s \n", strerror(errno) );
-   return;
+   return -1;
  } 
 
  //listen for connection from client
  rc=listen(listenfd,1);
  if(rc!=0){
      printf("Cannot listen, Got problems, %d. \n", errno);
-     return;
+     return -1;
  }
  
  printf("Listening on port %d \n",PORT);
@@ -102,7 +104,7 @@ int main()
    printf("accept = %d listenfd = %d \n", connfd, listenfd );
    childCnt++;
    
-   
+
    int q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), cli, sizeof(cli));
    printf("q = %d \n",q); 
    printf("listener: got packet from %s:%d\n", cli,ntohs(clientAddress.sin_port));
@@ -117,6 +119,7 @@ int main()
        get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
        
        while(1){
+	 /* ------------------------ */
         n=recv(connfd,msg,MAXSZ,0);
         printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
         if(n==0){
@@ -128,7 +131,7 @@ int main()
 	  printf("Chile [%d]: Issues %s.\n", strerror(errno));
 	  close(connfd);
 	  break;
-       }
+	}
         msg[n]=0;
         send(connfd,msg,n,0);	 
         printf("Child[%d]: (x:y) Receive and set:%s\n",childCnt,msg);
@@ -138,13 +141,13 @@ int main()
    else {
      printf("Parent, close connfd().\n");
      close(connfd);//sock is closed BY PARENT
-     /*
+     
      if(childCnt>0){
        printf("Being a bad parent.\n");
-       sleep(100);
+       //       sleep(100);
        printf("done sleeping.\n");
      }
-     */
+     
    }
  }//close exterior while
  

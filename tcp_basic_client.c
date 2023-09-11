@@ -86,7 +86,8 @@ int main(int argc, char *argv[])
 
     freeaddrinfo(servinfo); // all done with this structure
     int totalBytes=0;
-    
+
+    /* -------------------------------------------- */
     numbytes=send(sockfd,trunk,sizeof(trunk),0);
     printf("Sent %d bytes to server\n",numbytes);
     while(1){
