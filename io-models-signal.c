@@ -45,15 +45,17 @@ int totalBytes;
 char buffer[MAXDATA];
 
 
-int io_handler(int sig){
+void io_handler(int sig){
   printf("io_handler %d \n", sig);
 
 
   char outBuffer[60];
   char outASCIIBuffer[60];
+  char outASCIIBuffer2[80];
     
   memset(&buffer, 0, MAXDATA);
   memset(&outASCIIBuffer, 0, 60);
+  memset(&outASCIIBuffer2, 0, 80);
   memset(&outBuffer, 0, 60);
   numbytes = recv(sockfd, buffer, MAXDATA-1, 0);
   if(numbytes == -1 ){
@@ -71,9 +73,9 @@ int io_handler(int sig){
       printf("-    ");
     }
     if(i==0){
-      sprintf(&outASCIIBuffer,"0x%02x",outBuffer[i]);
+      sprintf(outASCIIBuffer2,"0x%02x",outBuffer[i]);
     } else {
-      sprintf(&outASCIIBuffer,"%s 0x%02x",outASCIIBuffer,outBuffer[i]);
+      sprintf(outASCIIBuffer2,"%s 0x%02x",outASCIIBuffer,outBuffer[i]);
     }
   }
   printf("\n%s \n",outASCIIBuffer);
@@ -150,7 +152,12 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    int q=inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),s, sizeof s);
+    const char *q=inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),s, sizeof s);
+     if ( q == NULL ) {
+      fprintf(stderr, "problem inet_ntop\n");
+      freeaddrinfo(servinfo); // all done with this structure
+      return 2;
+    } 
     /* q ok or not */
     printf("client: connected to %s:%s\n", s,Destport);
 

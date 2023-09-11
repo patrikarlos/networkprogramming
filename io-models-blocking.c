@@ -103,26 +103,35 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    int q=inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),s, sizeof s);
+    const char *q=inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),s, sizeof s);
+    if (q == NULL ){
+      fprintf(stderr," Issues with inet_ntop.");
+      freeaddrinfo(servinfo); // all done with this structure
+      return 3;
+    }
+      
     /* q ok or not */
     printf("client: connected to %s:%s\n", s,Destport);
 
     freeaddrinfo(servinfo); // all done with this structure
     int totalBytes=0;
 
-    char outBuffer[60];
-    char outASCIIBuffer[60];
+    char outBuffer[80];
+    char outASCIIBuffer[80];
+    char outASCIIBuffer2[100];
+    
     struct timeval then, now,diff;
      
     while(1){
       memset(&buffer, 0, MAXDATA);
-      memset(&outASCIIBuffer, 0, 60);
-      memset(&outBuffer, 0, 60);
+      memset(&outASCIIBuffer, 0, 80);
+      memset(&outASCIIBuffer2, 0, 100);
+      memset(&outBuffer, 0, 80);
       gettimeofday(&then, NULL);
       numbytes = recv(sockfd, buffer, MAXDATA-1, 0);
       gettimeofday(&now, NULL);
       timersub(&now,&then,&diff);
-      if(numbytes == -1 ){
+      if(numbytes == -1 ){ 
         perror("recv");
 	/* close socket */
         exit(1);
@@ -143,13 +152,13 @@ int main(int argc, char *argv[])
 	  printf("-    ");
 	}
 	if(i==0){
-	  sprintf(&outASCIIBuffer,"0x%02x",outBuffer[i]);
+	  sprintf(outASCIIBuffer2,"0x%02x",outBuffer[i]);
 	} else {
-	  sprintf(&outASCIIBuffer,"%s 0x%02x",outASCIIBuffer,outBuffer[i]);
+	  sprintf(outASCIIBuffer2,"%s 0x%02x",outASCIIBuffer,outBuffer[i]);
 	}
       }
       
-      printf("\n%s \n",outASCIIBuffer);
+      printf("\n%s \n",outASCIIBuffer2);
       
       /*      sleep(2); */
     }

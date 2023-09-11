@@ -79,15 +79,15 @@ int main()
  
  struct sockaddr_in serverAddress;//server receive on this address
  struct sockaddr_in clientAddress;//server sends to client on this address
- struct sockaddr_storage their_addr;
+ // struct sockaddr_storage their_addr;
  
- int n;
- char msg[MAXSZ];
- int clientAddressLength;
+ // int n;
+ // char msg[MAXSZ];
+ socklen_t *clientAddressLength;
  int pid;
 
  char cli[INET6_ADDRSTRLEN]; 
- char s[INET6_ADDRSTRLEN];
+ // char s[INET6_ADDRSTRLEN];
 
  struct timeval then, now,diff;
  
@@ -123,15 +123,19 @@ int main()
  while(1) {
    //parent process waiting to accept a new connection
    printf("\n*****server waiting for new client connection:*****\n");
-   clientAddressLength=sizeof(clientAddress);
-   connfd=accept(listenfd,(struct sockaddr*)&clientAddress,&clientAddressLength);
+   clientAddressLength=(socklen_t*)sizeof(clientAddress);
+   connfd=accept(listenfd,(struct sockaddr*)&clientAddress,clientAddressLength);
    /* Check rv of accept */ 
    printf("accept = %d listenfd = %d \n", connfd, listenfd );
    childCnt++;
    
    
-   int q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), cli, sizeof(cli));
-   printf("q = %d \n",q); 
+   const char *q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), cli, sizeof(cli));
+   if (q == NULL ){
+     printf("issues with inet_ntop.\n");
+     return -1;
+   }
+
    printf("listener: got packet from %s:%d\n", cli,ntohs(clientAddress.sin_port));
 
    char *rndString;
@@ -144,7 +148,7 @@ int main()
        close(listenfd);//sock is closed BY child
        printf("Im childm (PID=%d)  %d.\n", pid, childCnt);
        //rceive from client
-       get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
+       get_ip_str((struct sockaddr*)&clientAddress,cli,(size_t)clientAddressLength);
        
        while(1){
 	rndString=randstring(10);

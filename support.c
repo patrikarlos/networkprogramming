@@ -12,7 +12,7 @@
 
 int main(int argc, char *argv[]){
 
-
+  
   printf("sizeof(sockaddr_in) = %ld \n", sizeof(struct sockaddr_in));
   printf("struct sockaddr_in { \n");
   int sum=sizeof(uint8_t);
@@ -29,13 +29,13 @@ int main(int argc, char *argv[]){
   printf("Sum = %ld \n", sizeof(uint8_t) + sizeof(sa_family_t) + sizeof(in_port_t) + sizeof(struct in_addr) + 8 );
 
   struct sockaddr_in bob;
-  struct sockaddr_in *ptr;
-  
-  printf("bob %ld \n ", sizeof(bob));
-  printf("bob %p \n",&bob);
+  struct sockaddr_in *ptr=&bob;
+   
+  printf("bob size %ld \n", sizeof(bob));
+  printf("bob ptr  %p \n",&bob);
   //  printf("bob.sin_len = %p  ==> %ld \n", &bob.sin_len,(unsigned char*)ptr->sin_len-(unsigned char*)ptr );
-  printf("bob.sin_family = %p  ==> %d \n", &bob.sin_family,(unsigned char*)ptr->sin_family-(unsigned char*)ptr );
-  printf("bob.sin_port   = %p  ==> %d \n", &bob.sin_port,(unsigned char*)ptr->sin_port-(unsigned char*)ptr );
+  printf("bob.sin_family = %p  ==> %ld \n", &bob.sin_family,(unsigned char*)ptr->sin_family-(unsigned char*)ptr );
+  printf("bob.sin_port   = %p  ==> %ld \n", &bob.sin_port,(unsigned char*)ptr->sin_port-(unsigned char*)ptr );
   //  printf("bob.sin_addr   = %p  ==> %ld \n",&bob.sin_addr,(unsigned char*)ptr->sin_addr-(unsigned char*)ptr );
   printf("bob.sin_addr   = %p  ==>  \n", &bob.sin_addr);
   printf("bob.sin_zero   = %p  ==> %ld \n", &bob.sin_zero,(unsigned char*)ptr->sin_zero-(unsigned char*)ptr );

@@ -2,7 +2,7 @@
 
 #define DEBUG_LEVEL 2
 
-void main(void){
+int main(void){
   printf("Hello World.\n");
 
   printf("Absolute Debugg Levels.\n");
@@ -33,7 +33,7 @@ void main(void){
 #else
   printf("not present.\n");
 #endif
-  
+  return(0);
 }
     
   

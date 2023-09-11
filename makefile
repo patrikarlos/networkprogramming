@@ -52,7 +52,7 @@ iomodels-signal: io-models-signal.c
 	$(CC) -Wall -o iomodels-signal io-models-signal.c
 
 support: support.c
-	$(CC) -Wall -o support support.c
+	$(CC) -Wall -o support support.c -Wint-to-pointer-cast
 
 broadcast_udp: broadcast_udp.c
 	$(CC) -Wall -o broadcast_udp broadcast_udp.c 
