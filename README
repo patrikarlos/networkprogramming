@@ -1,0 +1,4 @@
+## Requirements (Debian/Ubuntu)
+
+apt install build-essential git libssl-dev
+
