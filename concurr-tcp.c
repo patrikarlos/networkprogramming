@@ -105,8 +105,8 @@ int main()
    childCnt++;
    
 
-   int q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), cli, sizeof(cli));
-   printf("q = %d \n",q); 
+   const char *q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), cli, sizeof(cli));
+   printf("q = %s \n",q); 
    printf("listener: got packet from %s:%d\n", cli,ntohs(clientAddress.sin_port));
     
    //child process is created for serving each new clients
@@ -116,7 +116,7 @@ int main()
        close(listenfd);//sock is closed BY child
        printf("Im childm (PID=%d)  %d.\n", pid, childCnt);
        //rceive from client
-       get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
+       get_ip_str((struct sockaddr*)&clientAddress,cli,(size_t)clientAddressLength);
        
        while(1){
 	 /* ------------------------ */
@@ -144,7 +144,8 @@ int main()
      
      if(childCnt>0){
        printf("Being a bad parent.\n");
-       //       sleep(100);
+
+       sleep(100);
        printf("done sleeping.\n");
      }
      
