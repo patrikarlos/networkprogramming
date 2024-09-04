@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    int q=inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),s, sizeof s);
+    char *q=inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),s, sizeof s);
     /* q ok or not */
     printf("client: connected to %s:%s\n", s,PORT);
 

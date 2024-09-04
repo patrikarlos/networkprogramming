@@ -63,7 +63,7 @@ void  ALARMhandler(int sig)
   printf("Hello\n");
   fflush(fptr);
   close(sockfd);
-  sockfd=NULL;
+  sockfd=0;
   fclose(fptr);
   signal(SIGALRM, ALARMhandler);     /* reinstall the handler    */
 }

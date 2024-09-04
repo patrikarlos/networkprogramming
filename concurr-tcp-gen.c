@@ -100,7 +100,7 @@ int main()
    if(pid==0)//child process rec and send
      {
        //rceive from client
-       get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
+       get_ip_str((struct sockaddr*)&clientAddress,&cli,(size_t)&clientAddressLength);
        
        printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
        while(1){

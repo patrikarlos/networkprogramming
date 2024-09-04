@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
       totalBytes+=numbytes;
       memcpy(&outBuffer,&buffer,20);
       
-      printf("client (%d/%d)  %ld.%06ld : received \n",numbytes, totalBytes, diff.tv_sec,diff.tv_usec );
+      printf("client (%d/%d)  %ld.%06ld : received \n",numbytes, totalBytes, diff.tv_sec,(long int)diff.tv_usec );
       for(int i=0; i<10;i++){
 	if( isprint(outBuffer[i])) {
 	  printf("%c    ",outBuffer[i]);

@@ -110,8 +110,8 @@ int main()
    printf("accept = %d \n", connfd );
 
    childCnt++;
-   int q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), s, sizeof(s));
-   printf("q = %d \n",q); 
+   const char* q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), s, sizeof(s));
+   printf("q = %p \n",q); 
    
    printf("listener: got packet from %s:%d\n", s,ntohs(clientAddress.sin_port));
 
@@ -119,7 +119,7 @@ int main()
    int clientCount;
 
    //rceive from client
-   get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
+   get_ip_str((struct sockaddr*)&clientAddress,&cli,(size_t)&clientAddressLength);
    n=recv(connfd,cmsg,MAXSZ,0);
    
    printf("Child[%d] (%s:%d): recv(%d) [%s].\n", childCnt,cli,ntohs(clientAddress.sin_port),n,cmsg);

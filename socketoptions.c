@@ -6,7 +6,7 @@
 #include <signal.h>
 #include <stdio.h>
 
-main()
+int main(void)
 {
   int sockfd;
 
@@ -83,5 +83,6 @@ main()
   }
 #endif
   
-  
+
+  return(0);
 }

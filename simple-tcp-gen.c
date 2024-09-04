@@ -117,14 +117,14 @@ int main()
    printf("accept = %d \n", connfd );
 
    childCnt++;
-   int q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), s, sizeof(s));
-   printf("q = %d \n",q); 
+   const char* q=inet_ntop(clientAddress.sin_family, get_in_addr((struct sockaddr *)&clientAddress), s, sizeof(s));
+   printf("q = %p \n",q); 
    
    printf("listener: got packet from %s:%d\n", s,ntohs(clientAddress.sin_port));
    
 
    //rceive from client
-   get_ip_str((struct sockaddr*)&clientAddress,&cli,&clientAddressLength);
+   get_ip_str((struct sockaddr*)&clientAddress,&cli,(size_t)&clientAddressLength);
    
    printf("Child[%d] (%s:%d): recv(%d) .\n", childCnt,cli,ntohs(clientAddress.sin_port),n);
    int dropcnt=5000;
