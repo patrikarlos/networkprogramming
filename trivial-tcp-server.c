@@ -156,7 +156,7 @@ int main()
         rv=send(connfd,rndString,10,0);
 	gettimeofday(&now, NULL);
 	timersub(&now,&then,&diff);
-	printf("Sent=%d in %ld.%06ld \n", rv, diff.tv_sec,diff.tv_usec);
+	printf("Sent=%d in %ld.%06ld \n", rv, diff.tv_sec,(long int)diff.tv_usec);
 	if(rv==-1){
 	  fprintf(stderr, "Child[%d](%s:%d): Send issues, %s .\n", childCnt,cli,ntohs(clientAddress.sin_port),strerror(errno));
 	  free(rndString);

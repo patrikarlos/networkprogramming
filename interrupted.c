@@ -57,7 +57,7 @@ int main(void)
   signal(SIGALRM, ALARMhandler);
 
 
-  struct timeval then, now,diff;
+  struct timeval then, now,diff; 
   
 
 
@@ -143,7 +143,7 @@ int main(void)
   hints.ai_socktype = SOCK_STREAM;
 
   /* May require adaptation, to pick a port that isnt used. AFAIK helicon does not use port 65000. */
-  if ((rv = getaddrinfo("helicon.nplab.bth.se", "65000", &hints, &servinfo)) != 0) {
+  if ((rv = getaddrinfo("13.53.76.30", "65000", &hints, &servinfo)) != 0) {
     fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
     return 1;
   }
@@ -157,13 +157,15 @@ int main(void)
 
   printf("Socket created, setting alarm on 3 ms.\n");
   
-  ualarm(3000,0); // 3 ms
+  //ualarm(3000,0); // 3 ms
+  alarm(5); // 3 ms
   gettimeofday(&then, NULL);
   rv=connect(sockfd, p->ai_addr, p->ai_addrlen);
+  alarm(0);
   gettimeofday(&now, NULL);
   timersub(&now,&then,&diff);
   if (rv == -1 ){
-    printf("Connect: %d , errno = %d, duration =%ld.%06ld  \n",rv, errno, diff.tv_sec,diff.tv_usec );
+    printf("Connect: %d , errno = %d, duration =%ld.%06ld  \n",rv, errno, diff.tv_sec,(long int)diff.tv_usec );
     printf("Error: %s \n", strerror(errno));
       
   } else {

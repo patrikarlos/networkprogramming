@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
   
   run=0;
 
-  int q1,q2;
+  sig_t q1, q2;
   /* Test various combinations to see what signals can be caught */
   signal(SIGINT, INThandler);
   signal(SIGALRM, ALARMhandler);
