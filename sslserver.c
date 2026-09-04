@@ -186,7 +186,8 @@ int main(int count, char *Argc[])
  
     portnum = Argc[1];
     ctx = InitServerCTX();        /* initialize SSL */
-    LoadCertificates(ctx, "mycert.pem", "mycert.pem"); /* load certs */
+    //    LoadCertificates(ctx, "mycert.pem", "mycert.pem"); /* load certs */
+    LoadCertificates(ctx, "mgnt_certonly.pem", "mgnt.key"); /* load certs */
     server = OpenListener(atoi(portnum));    /* create server socket */
     while (1)
     {   struct sockaddr_in addr;

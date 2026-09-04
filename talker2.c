@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 	}
 
 	char myAddress[30];
-	char *myAdd=&myAddress;
+	char *myAdd=myAddress;
 
 	struct sockaddr_in local_sin;
 	socklen_t local_sinlen = sizeof(local_sin);

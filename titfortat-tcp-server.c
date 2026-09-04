@@ -83,7 +83,7 @@ int main()
 
  printf("Bob\n");
  char myAddress[INET6_ADDRSTRLEN];
- char *myAdd=&myAddress;
+ char *myAdd=myAddress;
 
  struct sockaddr_in local_sin;
  socklen_t local_sinlen = sizeof(local_sin);
@@ -119,7 +119,7 @@ int main()
    int clientCount;
 
    //rceive from client
-   get_ip_str((struct sockaddr*)&clientAddress,&cli,(size_t)&clientAddressLength);
+   get_ip_str((struct sockaddr*)&clientAddress,cli,(size_t)&clientAddressLength);
    n=recv(connfd,cmsg,MAXSZ,0);
    
    printf("Child[%d] (%s:%d): recv(%d) [%s].\n", childCnt,cli,ntohs(clientAddress.sin_port),n,cmsg);

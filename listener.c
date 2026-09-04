@@ -99,7 +99,7 @@ int main(void)
 
 	/* Added to print the address we are listening too. */
 	char myAddress[20];
-	char *myAdd=&myAddress;
+	char *myAdd=myAddress;
 
 	struct sockaddr_in local_sin;
 	socklen_t local_sinlen = sizeof(local_sin);

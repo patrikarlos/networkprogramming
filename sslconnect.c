@@ -94,6 +94,28 @@ void ShowCerts(SSL* ssl)
     else
         printf("Info: No client certificates configured.\n");
 }
+
+void LoadCertificates(SSL_CTX* ctx, char* CertFile, char* KeyFile)
+{
+    /* set the local certificate from CertFile */
+    if ( SSL_CTX_use_certificate_file(ctx, CertFile, SSL_FILETYPE_PEM) <= 0 )
+    {
+        ERR_print_errors_fp(stderr);
+        abort();
+    }
+    /* set the private key from KeyFile (may be the same as CertFile) */
+    if ( SSL_CTX_use_PrivateKey_file(ctx, KeyFile, SSL_FILETYPE_PEM) <= 0 )
+    {
+        ERR_print_errors_fp(stderr);
+        abort();
+    }
+    /* verify private key */
+    if ( !SSL_CTX_check_private_key(ctx) )
+    {
+        fprintf(stderr, "Private key does not match the public certificate\n");
+        abort();
+    }
+}
  
 int main(int count, char *strings[])
 {   SSL_CTX *ctx;
@@ -114,7 +136,7 @@ int main(int count, char *strings[])
     portnum=strings[2];
  
     ctx = InitCTX();
-    
+    LoadCertificates(ctx, "mgnt_certonly.pem", "mgnt.key"); /* load certs */
     server = OpenConnection(hostname, atoi(portnum));
     ssl = SSL_new(ctx);      /* create new SSL connection state */
     SSL_set_fd(ssl, server);    /* attach the socket descriptor */

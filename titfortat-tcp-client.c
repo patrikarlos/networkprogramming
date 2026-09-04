@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     bzero(myMessage,5000);
     char myHostname[128];
 
-    gethostname(&myHostname,sizeof(myHostname));
+    gethostname(myHostname,sizeof(myHostname));
     
     if (p == NULL) {
         fprintf(stderr, "client: failed to connect\n");

@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 		fprintf(myFile,"Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> <fd>
 		fprintf(stderr,"ERROR: Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> stderr
 		fprintf(stdout,"OUT: Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> stdout
-		sprintf(&myBuffer, "Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> myBuffer		
+		sprintf(myBuffer, "Hej World, %d asd %g.\n", (int)4, (double)4.54); //=> myBuffer		
 		return 1;
 	}
 	printf("Got info.\n");
@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
 	/* HERE */ 
 	if (p == NULL) {
 		fprintf(stderr, "talker: failed to create socket\n");
+		freeaddrinfo(servinfo);
 		return 2;
 	}
 
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
 	/* We have a socket! */
 	
 	char myAddress[30];
-	char *myAdd=&myAddress;
+	char *myAdd=myAddress;
 
 	/* Adapt to handle BOTH v4 and v6 */
 	struct sockaddr_in local_sin;
@@ -90,6 +91,7 @@ int main(int argc, char *argv[])
 	    exit(1);
 	  }
 
+	  sleep(1);
 	  getsockname(sockfd,(struct sockaddr*)&local_sin, &local_sinlen);
 	  
 	  myAdd=inet_ntop(local_sin.sin_family,&local_sin.sin_addr,myAddress,sizeof(myAddress));
